@@ -1,0 +1,24 @@
+{
+    "jsonpath": [
+        "$.user_id",
+        "$.name",
+        "$.review_count",
+        "$.yelping_since",
+        "$.useful",
+        "$.funny",
+        "$.cool",
+        "$.fans",
+        "$.average_stars",
+        "$.compliment_hot",
+        "$.compliment_more",
+        "$.compliment_profile",
+        "$.compliment_cute",
+        "$.compliment_list",
+        "$.compliment_note",
+        "$.compliment_plain",
+        "$.compliment_cool",
+        "$.compliment_funny",
+        "$.compliment_photos",
+        "$.compliment_writer"
+    ]
+}

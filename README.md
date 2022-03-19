@@ -10,8 +10,9 @@
     2. [Demographics of U.S. Cities](#demographics-of-us-cities)
 3. [Data Model Definition](#data-model-definition)
 4. [ETL Process](#etl-process)
-5. [How to use this project](#how-to-use-this-project)
-6. [Concluding thoughts](#concluding-thoughts)
+5. [Example Queries](#example-queries)
+6. [How to use this project](#how-to-use-this-project)
+7. [Concluding thoughts](#concluding-thoughts)
 
 ## Scope and Gather Data
 
@@ -193,6 +194,95 @@ Here's an example row of data:
 
 ![Project ERD](project_erd.png)
 
+### yelp_users data definition
+
+| **Field Name**     | **Data Type** | **Nullable** | **Field Length** | **Description**                                                      |
+|--------------------|---------------|--------------|------------------|----------------------------------------------------------------------|
+| user_id            | varchar       |     FALSE    |              256 | Yelp User Id, Primary Key                                            |
+| name               | varchar       |     FALSE    |              256 | The name of the user                                                 |
+| review_count       | int4          |     TRUE     |               10 | The number of reviews the user has written                           |
+| yelping_since      | varchar       |     TRUE     |              256 | The date the user created their yelp account                         |
+| useful             | int4          |     TRUE     |               10 | The number of reviews others have rated as useful                    |
+| funny              | int4          |     TRUE     |               10 | The number of reviews others have rated as funny                     |
+| fans               | int4          |     TRUE     |               10 | The number of fans the user has                                      |
+| average_stars      | float8        |     TRUE     |               17 | The average star rating the user has given in their reviews          |
+| compliment_hot     | int4          |     TRUE     |               10 | The number of "hot" compliments other users have given this user     |
+| compliment_more    | int4          |     TRUE     |               10 | The number of "more" compliments other users have given this user    |
+| compliment_profile | int4          |     TRUE     |               10 | The number of "profile" compliments other users have given this user |
+| compliment_cute    | int4          |     TRUE     |               10 | The number of "cute" compliments other users have given this user    |
+| compliment_list    | int4          |     TRUE     |               10 | The number of "list" compliments other users have given this user    |
+| compliment_note    | int4          |     TRUE     |               10 | The number of "note" compliments other users have given this user    |
+| compliment_plain   | int4          |     TRUE     |               10 | The number of "plain" compliments other users have given this user   |
+| compliment_cool    | int4          |     TRUE     |               10 | The number of "cool" compliments other users have given this user    |
+| compliment_funny   | int4          |     TRUE     |               10 | The number of "funny" compliments other users have given this user   |
+| compliment_writer  | int4          |     TRUE     |               10 | The number of "writer" compliments other users have given this user  |
+| compliment_photos  | int4          |     TRUE     |               10 | The number of "photos" compliments other users have given this user  |
+
+### yelp_reviews data definition
+
+| **Field Name** | **Data Type** | **Nullable** | **Field Length** | **Description**                                               |
+|----------------|---------------|--------------|------------------|---------------------------------------------------------------|
+| review_id      | varchar       |     FALSE    |              256 | Yelp Review Id, Primary Key                                   |
+| user_id        | varchar       |     TRUE     |              256 | Yelp User Id (foreign key to yelp_user.user_id)               |
+| business_id    | varchar       |     TRUE     |              256 | Yelp Business Id (foreign key to yelp_businesses.business_id) |
+| stars          | float8        |     TRUE     |               17 | The number of stars of the review                             |
+| date           | varchar       |     TRUE     |              256 | The date the review was given                                 |
+| text           | varchar       |     TRUE     |            65535 | The text content of the review                                |
+| useful         | int4          |     TRUE     |               10 | The number of "useful" upvotes given to this review           |
+| funny          | int4          |     TRUE     |               10 | The number of "funny" upvotes given to this review            |
+| cool           | int4          |     TRUE     |               10 | The number of "cool" upvotes given to this review             |
+
+### yelp_businesses data definition
+
+| **Field Name**  | **Data Type** | **Nullable** | **Field Length** | **Description**                                                          |
+|-----------------|---------------|--------------|------------------|--------------------------------------------------------------------------|
+| business_id     | varchar       |     FALSE    |              256 | Yelp Business Id, Primary Key                                            |
+| name            | varchar       |     FALSE    |              256 | The name of the business                                                 |
+| address         | varchar       |     TRUE     |              256 | The address of the business                                              |
+| city            | varchar       |     TRUE     |              256 | The city of the business                                                 |
+| state           | varchar       |     TRUE     |              256 | The state (2-letter code) of the business                                |
+| postal_code     | varchar       |     TRUE     |              256 | The postal code of the business                                          |
+| latitude        | float8        |     TRUE     |               17 | The latitude coordinates of the business                                 |
+| longitude       | float8        |     TRUE     |               17 | The longitude coordinates of the business                                |
+| stars           | float8        |     TRUE     |               17 | The average star rating of the business from all reviews it has received |
+| review_count    | int4          |     TRUE     |               10 | The total number of reviews the business has received                    |
+| is_open         | int4          |     TRUE     |               10 | 1 if the business is open, 0 if the business is closed                   |
+| hours_monday    | varchar       |     TRUE     |              256 | The business' hours on Monday                                            |
+| hours_tuesday   | varchar       |     TRUE     |              256 | The business' hours on Tuesday                                           |
+| hours_wednesday | varchar       |     TRUE     |              256 | The business' hours on Wednesday                                         |
+| hours_thursday  | varchar       |     TRUE     |              256 | The business' hours on Thursday                                          |
+| hours_friday    | varchar       |     TRUE     |              256 | The business' hours on Friday                                            |
+| hours_saturday  | varchar       |     TRUE     |              256 | The business' hours on Saturday                                          |
+| hours_sunday    | varchar       |     TRUE     |              256 | The business' hours on Sunday                                            |
+
+### tax_climate data definition
+
+| **Field Name**                  | **Data Type** | **Nullable** | **Field Length** | **Description**                               |
+|---------------------------------|---------------|--------------|------------------|-----------------------------------------------|
+| state                           | varchar       |     FALSE    |              256 | Each US state, full state name                |
+| overall_rank                    | int4          |     TRUE     |               10 | The overall tax climate rank                  |
+| corporate_tax_rank              | int4          |     TRUE     |               10 | The corporate tax rank for the state          |
+| individual_income_tax_rank      | int4          |     TRUE     |               10 | The individual income tax rank for the state  |
+| sales_tax_rank                  | int4          |     TRUE     |               10 | The sales tax rank for the state              |
+| property_tax_rank               | int4          |     TRUE     |               10 | The property tax rank for the state           |
+| unemployment_insurance_tax_rank | int4          |     TRUE     |               10 | The unemployment insurance rank for the state |
+
+### demographics data definition
+
+| **Field Name**         | **Data Type** | **Nullable** | **Field Length** | **Description**                               |
+|------------------------|---------------|--------------|------------------|-----------------------------------------------|
+| total_population       | int4          |     TRUE     |               10 | The total population in the city, state       |
+| female_population      | float8        |     TRUE     |               17 | The female population in the city, state      |
+| count                  | int4          |     TRUE     |               10 | The population of the race in the city, state |
+| foreign_born           | float8        |     TRUE     |               17 | The foreign born in the city, state           |
+| state_code             | varchar       |     TRUE     |              256 | The 2-letter abbreviation of the state        |
+| average_household_size | float8        |     TRUE     |               17 | The average household size in the city, state |
+| city                   | varchar       |     TRUE     |              256 | City                                          |
+| race                   | varchar       |     TRUE     |              256 | Race                                          |
+| male_population        | float8        |     TRUE     |               17 | The male population in the city, state        |
+| median_age             | float8        |     TRUE     |               17 | The median age in the city, state             |
+| number_of_veterans     | float8        |     TRUE     |               17 | The number of veterans in the city, state     |
+| state                  | varchar       |     TRUE     |              256 | State                                         |
 
 ## ETL Process
 
@@ -209,6 +299,77 @@ The DAG takes the following steps:
 7. Insert data to summary tables.
 8. Unload data from Redshift to S3.
 9. Shutdown Redshift Cluster and delete IAM role.
+
+## Example queries
+
+Within the project, I create two additional tables, `tax_and_yelp_business` and `demographic_and_yelp_business` to illustrate just two simple ways of joining together some of this data. For illustration, here are the queries and sample output for each of these tables.
+
+### tax_and_yelp_business
+
+Query:
+```sql
+SELECT 
+    t.state AS state,
+    MAX(t.overall_rank) AS overall_rank,
+    MAX(t.corporate_tax_rank) AS corporate_tax_rank,
+    MAX(t.individual_income_tax_rank) AS individual_income_tax_rank,
+    MAX(t.sales_tax_rank) AS sales_tax_rank,
+    MAX(t.property_tax_rank) AS property_tax_rank,
+    MAX(t.unemployment_insurance_tax_rank) AS unemployment_insurance_tax_rank,
+    COUNT(y.business_id) AS num_yelp_businesses,
+    SUM(y.is_open) AS num_open_yelp_businesses,
+    AVG(y.review_count) AS avg_yelp_review_count,
+    AVG(y.stars) AS avg_yelp_review_rating
+FROM yelp_businesses y
+    JOIN demographics d ON y.state = d.state_code
+    JOIN tax_climate t ON t.state = d.state
+GROUP BY t.state
+ORDER BY t.state
+```
+
+Sample output:
+
+| state      | overall_rank | corporate_tax_rank | individual_income_tax_rank | sales_tax_rank | property_tax_rank | unemployment_insurance_tax_rank | num_yelp_businesses | num_open_yelp_businesses | avg_yelp_review_count | avg_yelp_review_rating |
+|------------|--------------|--------------------|----------------------------|----------------|-------------------|---------------------------------|---------------------|--------------------------|-----------------------|------------------------|
+| Alabama    | 41           | 23                 | 30                         | 50             | 19                | 14                              | 34                  | 0                        | 11                    | 2.5                    |
+| Arizona    | 24           | 22                 | 17                         | 40             | 11                | 8                               | 160                 | 80                       | 27                    | 4                      |
+| California | 49           | 28                 | 49                         | 45             | 14                | 21                              | 8788                | 8112                     | 16                    | 4.230769230769231      |
+| Colorado   | 21           | 10                 | 14                         | 36             | 32                | 41                              | 255840              | 194480                   | 43                    | 3.774702939337086      |
+| Delaware   | 13           | 50                 | 42                         | 2              | 4                 | 3                               | 5                   | 5                        | 7                     | 4.5                    |
+
+### demographic_and_yelp_business
+
+Query:
+```sql
+SELECT
+    d.state AS state,
+    d.city AS city,
+    AVG(d.median_age) AS median_age,
+    MAX(d.male_population) AS male_population,
+    MAX(d.female_population) AS female_population,
+    MAX(d.total_population) AS total_population,
+    MAX(d.number_of_veterans) AS number_of_veterans,
+    MAX(d.foreign_born) AS foreign_born,
+    AVG(d.average_household_size) AS average_household_size,
+    COUNT(y.business_id) AS num_yelp_businesses,
+    SUM(y.is_open) AS num_open_yelp_businesses,
+    AVG(y.review_count) AS avg_yelp_review_count,
+    AVG(y.stars) AS avg_yelp_review_rating
+FROM yelp_businesses y
+    JOIN demographics d ON d.state_code = y.state AND d.city = y.city
+GROUP BY d.state, d.city
+ORDER BY d.state, d.city
+```
+
+Sample output:
+
+| state      | city     | median_age | male_population | female_population | total_population | number_of_veterans | foreign_born | average_household_size | num_yelp_businesses | num_open_yelp_businesses | avg_yelp_review_count | avg_yelp_review_rating |
+|------------|----------|------------|-----------------|-------------------|------------------|--------------------|--------------|------------------------|---------------------|--------------------------|-----------------------|------------------------|
+| California | Irvine   | 34.6       | 125411          | 131516            | 256927           | 5532               | 116366       | 2.73                   | 5                   | 5                        | 5                     | 5                      |
+| California | San Jose | 36.5       | 518317          | 508602            | 1026919          | 27269              | 401493       | 3.13                   | 5                   | 5                        | 17                    | 4                      |
+| Colorado   | Arvada   | 41         | 54870           | 60165             | 115035           | 8930               | 4921         | 2.49                   | 5                   | 5                        | 16                    | 3                      |
+| Colorado   | Aurora   | 34.2       | 177899          | 180971            | 358870           | 25158              | 65816        | 2.82                   | 5                   | 0                        | 14                    | 2                      |
+| Colorado   | Boulder  | 29         | 56342           | 51000             | 107342           | 4061               | 12993        | 2.239999999999912      | 12710               | 9560                     | 44                    | 3.7793076317859953     |
 
 ## How to use this project
 
